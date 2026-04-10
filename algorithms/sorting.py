@@ -60,3 +60,37 @@ def merge_sort(arr):
     metrics.runtime = time.perf_counter() - start
 
     return result, metrics
+
+def quick_sort(arr):
+    metrics = SortMetrics()
+    start = time.perf_counter()
+
+    def partition(a, low, high):
+        pivot = a[high]
+        i = low - 1
+
+        for j in range(low, high):
+            metrics.comparisons += 1
+            if a[j] <= pivot:
+                i += 1
+                if i != j:
+                    a[i], a[j] = a[j], a[i]
+                    metrics.swaps += 1
+
+        if i + 1 != high:
+            a[i + 1], a[high] = a[high], a[i + 1]
+            metrics.swaps += 1
+
+        return i + 1
+
+    def sort(a, low, high):
+        if low < high:
+            pi = partition(a, low, high)
+            sort(a, low, pi - 1)
+            sort(a, pi + 1, high)
+
+    result = arr.copy()
+    sort(result, 0, len(result) - 1)
+    metrics.runtime = time.perf_counter() - start
+
+    return result, metrics
