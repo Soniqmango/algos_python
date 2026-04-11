@@ -84,10 +84,35 @@ def quick_sort(arr):
         return i + 1
 
     def sort(a, low, high):
-        if low < high:
-            pi = partition(a, low, high)
-            sort(a, low, pi - 1)
-            sort(a, pi + 1, high)
+        # Iterative quicksort with median-of-three pivot selection
+        stack = []
+        stack.append((low, high))
+        
+        while stack:
+            low, high = stack.pop()
+            if low < high:
+                # Median of three pivot selection
+                mid = low + (high - low) // 2
+                
+                # Sort low, mid, high to find median
+                if a[low] > a[mid]:
+                    a[low], a[mid] = a[mid], a[low]
+                    metrics.swaps += 1
+                if a[low] > a[high]:
+                    a[low], a[high] = a[high], a[low]
+                    metrics.swaps += 1
+                if a[mid] > a[high]:
+                    a[mid], a[high] = a[high], a[mid]
+                    metrics.swaps += 1
+                
+                # Now a[high] is the median (pivot)
+                pi = partition(a, low, high)
+                
+                # Push right partition first (so left is processed first)
+                if pi + 1 < high:
+                    stack.append((pi + 1, high))
+                if low < pi - 1:
+                    stack.append((low, pi - 1))
 
     result = arr.copy()
     sort(result, 0, len(result) - 1)
