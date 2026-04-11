@@ -9,7 +9,7 @@ def generate_sorted_array(n):
 def generate_reverse_sorted_array(n):
     return list(range(n, 0, -1))
 
-def generate_nearly_sorted_array(n, swaps=10):
+def generate_nearly_sorted_array(n, swaps=100):
     arr = list(range(n))
     for _ in range(min(swaps, n)):
         i = random.randint(0, n - 1)
@@ -17,5 +17,5 @@ def generate_nearly_sorted_array(n, swaps=10):
         arr[i], arr[j] = arr[j], arr[i]
     return arr
 
-def generate_duplicate_heavy_array(n, unique_values=5):
+def generate_duplicate_heavy_array(n, unique_values=50):
     return [random.randint(0, unique_values - 1) for _ in range(n)]
