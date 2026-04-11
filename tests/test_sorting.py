@@ -1,61 +1,35 @@
+import pytest
 from algorithms.sorting import insertion_sort, merge_sort, quick_sort
 
-def test_insertion_sort_empty():
-    result, metrics = insertion_sort([])
+# all sorting types
+sorting_types = [insertion_sort, merge_sort, quick_sort]
+
+@pytest.mark.parametrize("sort_function", sorting_types)
+def test_sort_empty(sort_function):
+    result, _ = sort_function([])
     assert result == []
 
-def test_insertion_sort_single():
-    result, metrics = insertion_sort([5])
+@pytest.mark.parametrize("sort_function", sorting_types)
+def test_sort_single(sort_function):
+    result, _ = sort_function([5])
     assert result == [5]
 
-def test_insertion_sort_sorted():
-    result, metrics = insertion_sort([1, 2, 3, 4])
+@pytest.mark.parametrize("sort_function", sorting_types)
+def test_sort_sorted(sort_function):
+    result, _ = sort_function([1, 2, 3, 4])
     assert result == [1, 2, 3, 4]
 
-def test_insertion_sort_reverse():
-    result, metrics = insertion_sort([4, 3, 2, 1])
+@pytest.mark.parametrize("sort_function", sorting_types)
+def test_sort_reverse(sort_function):
+    result, _ = sort_function([4, 3, 2, 1])
     assert result == [1, 2, 3, 4]
 
-def test_insertion_sort_duplicates():
-    result, metrics = insertion_sort([3, 1, 2, 1, 3])
+@pytest.mark.parametrize("sort_function", sorting_types)
+def test_sort_duplicates(sort_function):
+    result, _ = sort_function([3, 1, 2, 1, 3])
     assert result == [1, 1, 2, 3, 3]
 
-def test_merge_sort_empty():
-    result, _ = merge_sort([])
-    assert result == []
-
-def test_merge_sort_single():
-    result, _ = merge_sort([5])
-    assert result == [5]
-
-def test_merge_sort_sorted():
-    result, _ = merge_sort([1, 2, 3, 4])
-    assert result == [1, 2, 3, 4]
-
-def test_merge_sort_reverse():
-    result, _ = merge_sort([4, 3, 2, 1])
-    assert result == [1, 2, 3, 4]
-
-def test_merge_sort_duplicates():
-    result, _ = merge_sort([3, 1, 2, 1, 3])
-    assert result == [1, 1, 2, 3, 3]
-
-def test_quick_sort_empty():
-    result, _ = quick_sort([])
-    assert result == []
-
-def test_quick_sort_single():
-    result, _ = quick_sort([5])
-    assert result == [5]
-
-def test_quick_sort_sorted():
-    result, _ = quick_sort([1, 2, 3, 4])
-    assert result == [1, 2, 3, 4]
-
-def test_quick_sort_reverse():
-    result, _ = quick_sort([4, 3, 2, 1])
-    assert result == [1, 2, 3, 4]
-
-def test_quick_sort_duplicates():
-    result, _ = quick_sort([3, 1, 2, 1, 3])
-    assert result == [1, 1, 2, 3, 3]
+@pytest.mark.parametrize("sort_function", sorting_types)
+def test_sort_all_same(sort_function):
+    result, _ = sort_function([2, 2, 2, 2])
+    assert result == [2, 2, 2, 2]
