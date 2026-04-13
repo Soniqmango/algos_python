@@ -33,29 +33,29 @@ def generate_guaranteed_path_grid(rows, cols, obstacle_prob = 0.4):
 
     return grid
 
-# def generate_maze_path_grid(rows, cols, start = (0, 0), end = None, bias = 70):
-#     if end == None:
-#         end = (rows - 1, cols - 1)
+def generate_maze_grid(rows, cols):
+    # Recursive backtracker: carve passages on a grid of cells spaced 2 apart,
+    # so walls sit between them. Works best with odd dimensions.
+    r = rows if rows % 2 == 1 else rows + 1
+    c = cols if cols % 2 == 1 else cols + 1
 
-#     grid = [[1 for _ in range(cols)] for _ in range(rows)]
+    grid = [[1] * c for _ in range(r)]
 
-#     r, c = start
-#     while (r, c) != (end):
-#         grid[r][c] = 0 # clear the obstacle on the path
-#         moves = []
-#         if r > 0: 
-#             for _ in range(100 - bias):
-#                 moves.append((r - 1, c)) # up
-#         if r < rows - 1: 
-#             for _ in range(bias):
-#                 moves.append((r + 1, c)) # down
-#         if c > 0: 
-#             for _ in range(100 - bias):
-#                 moves.append((r, c - 1)) # left
-#         if c < cols - 1: 
-#             for _ in range(bias):
-#                 moves.append((r, c + 1))  # right
-#         r, c = random.choice(moves) 
-#     grid[end[0]][end[1]] = 0  # clear the end cell
+    def carve(row, col):
+        grid[row][col] = 0
+        directions = [(0, 2), (0, -2), (2, 0), (-2, 0)]
+        random.shuffle(directions)
+        for dr, dc in directions:
+            nr, nc = row + dr, col + dc
+            if 0 <= nr < r and 0 <= nc < c and grid[nr][nc] == 1:
+                grid[row + dr // 2][col + dc // 2] = 0
+                carve(nr, nc)
 
-#     return grid
+    import sys
+    old_limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(max(old_limit, r * c))
+    carve(1, 1)
+    sys.setrecursionlimit(old_limit)
+
+    # Trim to requested size
+    return [grid[row][:cols] for row in range(rows)]

@@ -15,8 +15,8 @@ basic_failure_cases = [
 @pytest.mark.parametrize("graph_function", graph_algorithms)
 @pytest.mark.parametrize("grid,start,end", basic_failure_cases)
 def test_graph_failure_cases(graph_function, grid, start, end):
-    result = graph_function(grid, start, end)
-    assert result["path"] == []
+    path, _ = graph_function(grid, start, end)
+    assert path == []
 
 # VALID PATHS + VALIDITY
 
@@ -28,8 +28,7 @@ valid_cases = [
 @pytest.mark.parametrize("graph_function", graph_algorithms)
 @pytest.mark.parametrize("grid,start,end", valid_cases)
 def test_graph_valid_cases(graph_function, grid, start, end):
-    result = graph_function(grid, start, end)
-    path = result["path"]
+    path, _ = graph_function(grid, start, end)
 
     assert path[0] == start
     assert path[-1] == end
@@ -49,5 +48,5 @@ shortest_path_algorithms = [bfs, bidirectional_bfs]
     ([[0, 0, 0], [0, 1, 0], [0, 0, 0]], (0, 0), (2, 2), 5),
 ])
 def test_shortest_path_length(graph_function, grid, start, end, expected_length):
-    result = graph_function(grid, start, end)
-    assert len(result["path"]) == expected_length
+    path, _ = graph_function(grid, start, end)
+    assert len(path) == expected_length

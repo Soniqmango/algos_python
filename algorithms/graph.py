@@ -1,32 +1,25 @@
 import time
 from collections import deque
+from utils.metrics import GraphMetrics
 
 def bfs(grid, start, end):
     start_time = time.perf_counter()
 
-    # check for empty grid 
+    # check for empty grid
     if not grid or not grid[0]:
-        return {"path": [], "visited_count": 0, "runtime": 0.0}
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     # check start/end validity
     rows, cols = len(grid), len(grid[0])
     sr, sc = start
     er, ec = end
 
     if sr not in range(rows) or sc not in range(cols) or er not in range(rows) or ec not in range(cols):
-        return {
-            "path": [],
-            "visited_count": 0,
-            "runtime": 0.0,
-        }
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     if grid[sr][sc] == 1 or grid[er][ec] == 1:
-        return {
-            "path": [],
-            "visited_count": 0,
-            "runtime": 0.0,
-        }
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     queue = deque([start])
     visited = set([start])
     parent = {}
@@ -48,7 +41,7 @@ def bfs(grid, start, end):
                 visited.add(neighbor)
                 parent[neighbor] = current
                 queue.append(neighbor)
-    
+
     path = []
     if end in visited:
         node = end
@@ -58,40 +51,37 @@ def bfs(grid, start, end):
         path.append(start)
         path.reverse()
 
-    return {"path": path, "visited_count": len(visited), "runtime": time.perf_counter() - start_time}
+    metrics = GraphMetrics(
+        visited_count=len(visited),
+        path_length=len(path),
+        runtime=time.perf_counter() - start_time,
+    )
+    return path, metrics
 
 def dfs(grid, start, end):
     start_time = time.perf_counter()
 
-    # check for empty grid 
+    # check for empty grid
     if not grid or not grid[0]:
-        return {"path": [], "visited_count": 0, "runtime": 0.0}
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     # check start/end validity
     rows, cols = len(grid), len(grid[0])
     sr, sc = start
     er, ec = end
 
     if sr not in range(rows) or sc not in range(cols) or er not in range(rows) or ec not in range(cols):
-        return {
-            "path": [],
-            "visited_count": 0,
-            "runtime": 0.0,
-        }
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     if grid[sr][sc] == 1 or grid[er][ec] == 1:
-        return {
-            "path": [],
-            "visited_count": 0,
-            "runtime": 0.0,
-        }
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     stack = deque([start])
     visited = set([start])
     parent = {}
 
     directions = [(-1,0), (1,0), (0,-1), (0,1)]
-    
+
     while stack:
         current = stack.pop()
 
@@ -107,7 +97,7 @@ def dfs(grid, start, end):
                 visited.add(neighbor)
                 parent[neighbor] = current
                 stack.append(neighbor)
-    
+
     path = []
     if end in visited:
         node = end
@@ -117,40 +107,34 @@ def dfs(grid, start, end):
         path.append(start)
         path.reverse()
 
-    return {"path": path, "visited_count": len(visited), "runtime": time.perf_counter() - start_time}
+    metrics = GraphMetrics(
+        visited_count=len(visited),
+        path_length=len(path),
+        runtime=time.perf_counter() - start_time,
+    )
+    return path, metrics
 
 def bidirectional_bfs(grid, start, end):
     start_time = time.perf_counter()
- 
+
     if not grid or not grid[0]:
-        return {"path": [], "visited_count": 0, "runtime": 0.0}
- 
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     rows, cols = len(grid), len(grid[0])
     sr, sc = start
     er, ec = end
- 
+
     if sr not in range(rows) or sc not in range(cols) or er not in range(rows) or ec not in range(cols):
-        return {
-            "path": [],
-            "visited_count": 0,
-            "runtime": 0.0,
-        }
-    
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     if grid[sr][sc] == 1 or grid[er][ec] == 1:
-        return {
-            "path": [],
-            "visited_count": 0,
-            "runtime": 0.0,
-        }
- 
+        return [], GraphMetrics(runtime=time.perf_counter() - start_time)
+
     if start == end:
-        return {"path": [start], 
-                "visited_count": 1, 
-                "runtime": time.perf_counter() - start_time
-        }
- 
+        return [start], GraphMetrics(visited_count=1, path_length=1, runtime=time.perf_counter() - start_time)
+
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
- 
+
     start_queue = deque([start])
     end_queue = deque([end])
 
@@ -173,7 +157,7 @@ def bidirectional_bfs(grid, start, end):
         if current in other_visited:
             meeting_node = current
             return True
-    
+
         r, c = current
         for dr, dc in directions:
             nr, nc = r + dr, c + dc
@@ -219,12 +203,13 @@ def bidirectional_bfs(grid, start, end):
             right_path.append(node)
 
         path = left_path + right_path
- 
-    return {
-        "path": path,
-        "visited_count": len(start_visited | end_visited),
-        "runtime": time.perf_counter() - start_time,
-    }
+
+    metrics = GraphMetrics(
+        visited_count=len(start_visited | end_visited),
+        path_length=len(path),
+        runtime=time.perf_counter() - start_time,
+    )
+    return path, metrics
 
 
 def bfs_steps(grid, start, end):

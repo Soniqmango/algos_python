@@ -9,14 +9,14 @@ def run_benchmarks(function, grid, start, end, trials=5):
     path_lengths = []
 
     for _ in range(trials):
-        result = function(grid, start, end)
-        runtimes.append(result["runtime"])
-        visited_counts.append(result["visited_count"])
+        path, metrics = function(grid, start, end)
+        runtimes.append(metrics.runtime)
+        visited_counts.append(metrics.visited_count)
 
-        if result["path"] == []:
+        if path == []:
             path_found = False
         else:
-            path_lengths.append(len(result["path"]))
+            path_lengths.append(len(path))
 
     avg_runtime = sum(runtimes) / trials
     avg_visited_count = sum(visited_counts) / trials
